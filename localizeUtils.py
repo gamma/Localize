@@ -26,7 +26,7 @@ from re import compile
 from copy import copy
 import os
 
-re_translation = compile(r'^"(.+)" = "(.+)";$')
+re_translation = compile(r'^"(.+)" = "(.*)";$')
 re_comment_single = compile(r'^/\*.*\*/$')
 re_comment_start = compile(r'^/\*.*$')
 re_comment_end = compile(r'^.*\*/$')
@@ -76,7 +76,7 @@ class LocalizedFile():
             if line and re_translation.match(line):
                 translation = line
             else:
-                raise Exception('input file %s have invalid format' % fname)
+                raise Exception('input file %s have invalid format\n"%s"' % (fname, line))
 
             line = f.readline()
             while line and line == u'\n':
@@ -133,6 +133,7 @@ def merge(merged_fname, old_fname, new_fname):
     except Exception, e:
         print 'Error in file: %s' % merged_fname
         print 'Error: %s' % e
+        os.rename(old_fname, merged_fname)
         exit(-1)
 
 def sortLocale(old_fname, new_fname):
@@ -144,4 +145,8 @@ def sortLocale(old_fname, new_fname):
     except Exception, e:
         print 'Error in file: %s' % old_fname
         print 'Error: %s' % e
+        os.rename(old_fname, merged_fname)
         exit(-1)
+
+def iconvFile(old_fname, new_fname):
+    os.system('iconv -f `file -I %s | awk -F= \'{OFS="="; print toupper($2)}\'` -t UTF-8 "%s" > "%s"' % (old_fname, old_fname, new_fname))
