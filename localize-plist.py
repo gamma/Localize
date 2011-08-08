@@ -26,6 +26,10 @@ import os, sys
 from localizeUtils import *
 
 def localize(self_path, path):
+    
+    if not self_path:
+        self_path = '.'
+    
     plist2txt = self_path + os.path.sep + 'plist2text.sh'
     files = [name for name in os.listdir(path + os.path.sep) if name.endswith('plist') and os.path.isfile(path + os.path.sep + name)]
 

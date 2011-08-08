@@ -115,7 +115,8 @@ class LocalizedFile():
         return merged
 
     def sort(self):
-        self.strings = sorted(set(self.strings), key=lambda LocalizedString: LocalizedString.key.lower )
+        self.strings = list(set(self.strings));
+        self.strings.sort(key=lambda LocalizedString: LocalizedString.key)
         return self
  
 def merge(merged_fname, old_fname, new_fname):
