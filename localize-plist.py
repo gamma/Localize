@@ -41,21 +41,20 @@ def localize(self_path, path):
 		
 
         for language in languages:
-            language = path + os.path.sep + language
-            original = merged = language + os.path.sep + fileName
+            original = merged = path + os.path.sep + language + os.path.sep + fileName
 			
             old = original + '.old'
             new = original + '.new'
 
             if os.path.isfile(original):
-                os.rename(original, old)
+                iconvFile(original, old)
                 os.system('bash "%s" "%s" "%s"' % (plist2txt, fullFileName, original))
-                os.system('iconv -f UTF-8 -t UTF-8 "%s" > "%s"' % (original, new))
+                iconvFile(original, new)
                 merge(merged, old, new)
             else:
-                os.system('bash "%s" "%s" "%s"' % (plist2txt, fullFileName, old))
-                sortLocale(old, new)
-                os.system('iconv -f UTF-8 -t UTF-8 "%s" > "%s"' % (new, original))
+                os.system('bash "%s" "%s" "%s"' % (plist2txt, fullFileName, original))
+                iconvFile(original, old)
+                sortLocale(old, merged)
 
             if os.path.isfile(old):
                 os.remove(old)
@@ -68,3 +67,4 @@ if __name__ == '__main__':
         sys.exit(2)
 
     localize(os.path.dirname(sys.argv[0]), os.path.dirname(sys.argv[1]))
+    

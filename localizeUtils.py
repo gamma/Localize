@@ -149,4 +149,4 @@ def sortLocale(old_fname, new_fname):
         exit(-1)
 
 def iconvFile(old_fname, new_fname):
-    os.system('iconv -f `file -I %s | awk -F= \'{OFS="="; print toupper($2)}\'` -t UTF-8 "%s" > "%s"' % (old_fname, old_fname, new_fname))
+    os.system('iconv -f `file --mime "%s" | awk -F= \'{OFS="="; print ( length($2) == 0 ) ? "UTF-8" : toupper($2)}\'` -t UTF-8 "%s" > "%s"' % (old_fname, old_fname, new_fname))

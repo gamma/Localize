@@ -33,7 +33,7 @@ def localize(path):
 
     for language in languages:
     	language = 'i18n' + os.path.sep + language
-        original = merged = language + os.path.sep + STRINGS_FILE
+        original = merged = path + os.path.sep + language + os.path.sep + STRINGS_FILE
         old = original + '.old'
         new = original + '.new'
         
