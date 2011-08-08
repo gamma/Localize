@@ -35,15 +35,16 @@ class LocalizedString():
     def __init__(self, comments, translation):
         self.comments, self.translation = comments, translation
         self.key, self.value = re_translation.match(self.translation).groups()
+        self.lowerKey = self.key.lower();
 
     def __unicode__(self):
         return u'%s%s\n' % (u''.join(self.comments), self.translation)
 
     def __eq__(self, other):
-        return self.key==other.key
+        return self.lowerKey==other.lowerKey
 
     def __hash__(self):
-        return hash(('key', self.key))
+        return hash(('key', self.lowerKey))
 
 class LocalizedFile():
     def __init__(self, fname=None, auto_read=False):
@@ -57,7 +58,7 @@ class LocalizedFile():
     def read_from_file(self, fname=None):
         fname = self.fname if fname == None else fname
         try:
-            f = open(fname, encoding='utf-8', mode='r')
+            f = open(fname, encoding='utf_8', mode='r')
         except:
             print 'File %s does not exist.' % fname
             exit(-1)
@@ -115,8 +116,7 @@ class LocalizedFile():
         return merged
 
     def sort(self):
-        self.strings = list(set(self.strings));
-        self.strings.sort(key=lambda LocalizedString: LocalizedString.key)
+        self.strings = sorted(list(set(self.strings)), key=lambda LocalizedString: LocalizedString.lowerKey)
         return self
  
 def merge(merged_fname, old_fname, new_fname):
@@ -133,6 +133,7 @@ def merge(merged_fname, old_fname, new_fname):
     except Exception, e:
         print 'Error in file: %s' % merged_fname
         print 'Error: %s' % e
+        exit(-1)
 
 def sortLocale(old_fname, new_fname):
 
@@ -143,3 +144,4 @@ def sortLocale(old_fname, new_fname):
     except Exception, e:
         print 'Error in file: %s' % old_fname
         print 'Error: %s' % e
+        exit(-1)

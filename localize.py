@@ -45,7 +45,8 @@ def localize(path):
         else:
             os.system('genstrings -q -o "%s" `find . -name "*.m"`' % language)
             os.rename(original, old)
-            os.system('iconv -f UTF-16 -t UTF-8 "%s" > "%s"' % (old, original))
+            os.system('iconv -f UTF-16 -t UTF-8 "%s" > "%s"' % (old, new))
+            sortLocale(new, merged)
 
         if os.path.isfile(old):
         	os.remove(old)
