@@ -26,7 +26,7 @@ from re import compile
 from copy import copy
 import os
 
-re_translation = compile(r'^"(.+)" = "(.*)";$')
+re_translation = compile(r'^"(.+)" = "(.*?)";$')
 re_comment_single = compile(r'^/\*.*\*/$')
 re_comment_start = compile(r'^/\*.*$')
 re_comment_end = compile(r'^.*\*/$')
