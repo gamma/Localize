@@ -47,6 +47,7 @@ def mergeFiles(path, mergePath):
             destination.close
 
             sortLocale(old, original)
+            os.remove(old)
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
