@@ -20,15 +20,12 @@
 # - add sorting of the strings files - genstrings does this, but the plist2text does not
 # - improved Error messaging
 
-from sys import argv
 from string import replace
-import os
+import os, sys
 
 from localizeUtils import *
 
-STRINGS_FILE = 'Localizable.strings'
-
-def localize(path):
+def localize(path, STRINGS_FILE):
     languages = [name for name in os.listdir(path + os.path.sep + 'i18n') if name.endswith('.lproj') and os.path.isdir(path + os.path.sep + 'i18n' + os.path.sep + name)]
 
     for language in languages:
@@ -53,4 +50,7 @@ def localize(path):
         	os.remove(new)
 
 if __name__ == '__main__':
-    localize(os.getcwd())
+    if len(sys.argv) == 2:
+        localize(os.getcwd(), sys.argv[1])
+    else:
+        localize(os.getcwd(), 'Localizable.strings')
