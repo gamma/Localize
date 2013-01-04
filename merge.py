@@ -28,7 +28,8 @@ def mergeFiles(path, mergePath):
 
         original = path + os.path.sep + language + os.path.sep + STRINGS_FILE
         old = original + '.old'
-        
+        new = original + '.new'
+    
         # There is no such language lproj
         if not os.path.isdir(mergePath + os.path.sep + language ):
             print >>sys.stderr, 'Did not find Language in mergePath: ', mergePath + os.path.sep + language
@@ -46,8 +47,12 @@ def mergeFiles(path, mergePath):
             shutil.copyfileobj(open(toMergeWith, 'rb'), destination)
             destination.close
 
-            sortLocale(old, original)
-            os.remove(old)
+            iconvFile(old, new)
+            sortLocale(new, original)
+            if os.path.isfile(old):
+                os.remove(old)
+            if os.path.isfile(new):
+                os.remove(new)
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
