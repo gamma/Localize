@@ -26,6 +26,7 @@ import os, sys
 from localizeUtils import *
 
 def localize(path, STRINGS_FILE):
+    
     languages = [name for name in os.listdir(path + os.path.sep + 'i18n') if name.endswith('.lproj') and os.path.isdir(path + os.path.sep + 'i18n' + os.path.sep + name)]
 
     for language in languages:
@@ -35,12 +36,14 @@ def localize(path, STRINGS_FILE):
         new = original + '.new'
         
         if os.path.isfile(original):
+            print original, ' <- exists';
             iconvFile(original, old)
-            os.system('genstrings -q -o "%s" `find . -name "*.m"`' % language)
+            os.system('find . -name "*.m" -print0 | xargs -0 genstrings -q -o "%s"' % language)
             iconvFile(original, new)
             merge(merged, old, new)
         else:
-            os.system('genstrings -q -o "%s" `find . -name "*.m"`' % language)
+            print original, ' <- needs creation';
+            os.system('find . -name "*.m" -print0 | xargs -0 genstrings -q -o "%s"' % language)
             iconvFile(original, old)
             sortLocale(old, merged)
 
