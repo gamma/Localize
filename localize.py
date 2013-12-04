@@ -21,29 +21,32 @@
 # - improved Error messaging
 
 from string import replace
-import os, sys
+import os, sys, fnmatch
 
 from localizeUtils import *
 
 def localize(path, STRINGS_FILE):
-    
-    languages = [name for name in os.listdir(path + os.path.sep + 'i18n') if name.endswith('.lproj') and os.path.isdir(path + os.path.sep + 'i18n' + os.path.sep + name)]
 
-    for language in languages:
-    	language = 'i18n' + os.path.sep + language
-        original = merged = path + os.path.sep + language + os.path.sep + STRINGS_FILE
+    languages = []
+    for root, dirnames, filenames in os.walk(path):
+        for dirname in fnmatch.filter(dirnames, '*.lproj'):
+            languages.append([root, dirname]);
+
+    for root, language in languages:
+        language = os.path.join(root, language);
+        original = merged = os.path.join(language, STRINGS_FILE)
         old = original + '.old'
         new = original + '.new'
         
         if os.path.isfile(original):
             print original, ' <- exists';
             iconvFile(original, old)
-            os.system('find . -name "*.m" -print0 | xargs -0 genstrings -q -o "%s"' % language)
+            os.system('find "%s" -name "*.m" -print0 | xargs -0 genstrings -q -o "%s"' % (path, language))
             iconvFile(original, new)
             merge(merged, old, new)
         else:
             print original, ' <- needs creation';
-            os.system('find . -name "*.m" -print0 | xargs -0 genstrings -q -o "%s"' % language)
+            os.system('find "%s" -name "*.m" -print0 | xargs -0 genstrings -q -o "%s"' % (path, language))
             iconvFile(original, old)
             sortLocale(old, merged)
 
@@ -56,4 +59,4 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         localize(os.getcwd(), sys.argv[1])
     else:
-        localize(os.getcwd(), 'Localizable.strings')
+        localize(os.getcwd(), 'Localizable.strings');
